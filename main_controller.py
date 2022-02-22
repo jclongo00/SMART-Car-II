@@ -1,6 +1,6 @@
 # File:      main_controller.py
-# Date:      2/15/2022
-# Version:   1.0
+# Date:      2/22/2022
+# Version:   1.1
 # Motor:
 #   Frequency:     93-93.3Hz
 #   Motor forward: 13% - 16%
@@ -21,20 +21,21 @@ servoPin = 16     # PWM pin connected to Servo
 
 
 def setup():
-    GPIO.setwarnings(False)  #disable warnings
-    GPIO.setmode(GPIO.BOARD) #set pin numbering system
+    GPIO.setwarnings(False)          #disable warnings
+    GPIO.setmode(GPIO.BOARD)         #set pin numbering system
     GPIO.setup(motorPin,GPIO.OUT)
     GPIO.setup(servoPin,GPIO.OUT)
     print('setup')
 
-#pi_pwm = GPIO.PWM(opin,93.3) #create PWM instance with frequency
-#pi_pwm.start(13.6) 
-
 
 def motor():
-    for dc in range(0, 101, 5):    # Loop 0 to 100 stepping dc by 5 each loop
-        motor_pwm.ChangeDutyCycle(dc)
-        sleep(0.05)             # wait .05 seconds at current LED brightness
+    
+    for dc in range(20, 36):                 # Loop 20 to 36 stepping dc by 1 each loop
+        motor_pwm.ChangeDutyCycle(dc/2)      # Uses the loop to increment the motor duty cycle
+        sleep(0.05)                          # wait .05 seconds at current LED brightness
+    for dc in range(36, 20):                 # Loop 0 to 100 stepping dc by 5 each loop
+        motor_pwm.ChangeDutyCycle(dc/2)      #
+        sleep(0.05)                          # wait .05 seconds at current LED brightness
 
 def servo():
     for dc in range(40, 72):    # Loop 20 to 35 stepping dc by .5 each loop
