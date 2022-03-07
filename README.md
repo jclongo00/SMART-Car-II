@@ -1,6 +1,6 @@
 # SMART-Car-II
 
-This is the Git hun repo for the LMU SMART Car II Senior Capstone project. 
+This is the Git hub repo for the LMU SMART Car II Senior Capstone project. 
 
 This repo contains the fundamental code such as:
 - userInterface.py
