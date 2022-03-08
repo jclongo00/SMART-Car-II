@@ -2,6 +2,23 @@
 # Date:      2/27/2022
 # Version:   1.2
 import wx
+import RPi.GPIO as GPIO
+from time import sleep
+
+PointPin = 11     # Point to point Pin
+AdaptPin = 13     # Adaptive cruise control Pin
+AutoPPin = 15     # Auto Parking Pin
+
+
+def setup():
+    GPIO.setmode(GPIO.BOARD)         #set pin numbering system
+    GPIO.setup(PointPin,GPIO.OUT, initial=GPIO.LOW)
+    GPIO.setup(AdaptPin,GPIO.OUT, initial=GPIO.LOW)
+    GPIO.setup(AutoPPin,GPIO.OUT, initial=GPIO.LOW)
+    print('setup')
+
+def destroy():
+    GPIO.cleanup()
 
 class MyPanel(wx.Panel):
     
@@ -66,6 +83,9 @@ class MyPanel(wx.Panel):
         self.image2.SetBitmap(wx.Bitmap(off_img))
         self.image3.SetBitmap(wx.Bitmap(off_img))
         self.Refresh()
+        GPIO.output(PointPin, GPIO.HIGH)
+        GPIO.output(AdaptPin, GPIO.LOW)
+        GPIO.output(AutoPPin, GPIO.LOW)
     
     def on_button2(self, event):
         self.textBox.SetValue('Starting Adaptive Cruise Control Module...')
@@ -75,6 +95,9 @@ class MyPanel(wx.Panel):
         self.image2.SetBitmap(wx.Bitmap(on_img))
         self.image3.SetBitmap(wx.Bitmap(off_img))
         self.Refresh()
+        GPIO.output(PointPin, GPIO.LOW)
+        GPIO.output(AdaptPin, GPIO.HIGH)
+        GPIO.output(AutoPPin, GPIO.LOW)
         
     def on_button3(self, event):
         self.textBox.SetValue('Starting Auto Parking Module...')
@@ -84,28 +107,39 @@ class MyPanel(wx.Panel):
         self.image2.SetBitmap(wx.Bitmap(off_img))
         self.image3.SetBitmap(wx.Bitmap(on_img))
         self.Refresh()
+        GPIO.output(PointPin, GPIO.LOW)
+        GPIO.output(AdaptPin, GPIO.LOW)
+        GPIO.output(AutoPPin, GPIO.HIGH)
         
     def on_stopButton(self, event):
-    	self.textBox.SetValue('Stopping...')
-    	off_img = wx.Image("40light_off.jpg")
-    	self.image1.SetBitmap(wx.Bitmap(off_img))
-    	self.image2.SetBitmap(wx.Bitmap(off_img))
-    	self.image3.SetBitmap(wx.Bitmap(off_img))
-    	self.Refresh()
+        self.textBox.SetValue('Stopping...')
+        off_img = wx.Image("40light_off.jpg")
+        self.image1.SetBitmap(wx.Bitmap(off_img))
+        self.image2.SetBitmap(wx.Bitmap(off_img))
+        self.image3.SetBitmap(wx.Bitmap(off_img))
+        self.Refresh()
+        GPIO.output(PointPin, GPIO.LOW)
+        GPIO.output(AdaptPin, GPIO.LOW)
+        GPIO.output(AutoPPin, GPIO.LOW)
         
     def on_exitButton(self, event):
+        GPIO.cleanup()
         self.GetParent().Close()
 
 class MyFrame(wx.Frame):
     def __init__(self):
         super().__init__(None, title='SMART Car II')
-        panel = MyPanel(self)
-        #self.Show()
-        self.ShowFullScreen(True)
+        panel = MyPanel(self)                             
+        self.Show()                             #Comment out when not debugging
+        #self.ShowFullScreen(True)              #Comment out when debugging
 
 if __name__ == '__main__':
-    app = wx.App(redirect=False)
-    frame = MyFrame()
-    frame.SetSize(0,0,640,480)
-    frame.Centre()
-    app.MainLoop()
+    setup()
+    try:
+        app = wx.App(redirect=False)
+        frame = MyFrame()
+        frame.SetSize(0,0,640,480)
+        frame.Centre()
+        app.MainLoop()
+    except KeyboardInterrupt:
+        destroy()
