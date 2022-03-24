@@ -52,7 +52,7 @@ int ultrasonic(int trigPin, int echoPin){
   // Reads the echoPin, returns the sound wave travel time in microseconds 
   long duration = pulseIn(echoPin, HIGH); 
   // Calculating the distance 
-  return duration*0.034/2; //calculate the distance in inches
+  return duration/29/2; //calculate the distance in inches
   // Prints the distance on the Serial Monitor 
 }
 
@@ -69,29 +69,29 @@ void loop() {
   Serial.print("Distance2: "); 
   distance2 = ultrasonic(trigPin2,echoPin2);
   Serial.println(ultrasonic(trigPin2,echoPin2));
-  if ( distance1 < 2 ) { 
+  if ( distance1 < 8 ) { 
     digitalWrite(outputPin0, LOW);
     digitalWrite(outputPin1, LOW);
-  } else if ( distance1 < 6 ) { 
+  } else if ( distance1 < 16 ) { 
     digitalWrite(outputPin0, HIGH);
     digitalWrite(outputPin1, LOW); 
-  } else if ( distance1 < 12 ) { 
+  } else if ( distance1 < 24 ) { 
     digitalWrite(outputPin0, LOW);
     digitalWrite(outputPin1, HIGH); 
-  } else if ( distance1 > 36 ) { 
+  } else { 
     digitalWrite(outputPin0, HIGH);
     digitalWrite(outputPin1, HIGH); 
   } 
-  if ( distance2 < 2 ) { 
+  if ( distance2 < 16 ) { 
     digitalWrite(outputPin2, LOW);
     digitalWrite(outputPin3, LOW);
-  } else if ( distance2 < 6 ) { 
+  } else if ( distance2 < 24 ) { 
     digitalWrite(outputPin2, HIGH);
     digitalWrite(outputPin3, LOW); 
-  } else if ( distance2 < 12 ) { 
+  } else if ( distance2 < 32 ) { 
     digitalWrite(outputPin2, LOW);
     digitalWrite(outputPin3, HIGH); 
-  } else if ( distance2 > 36 ) { 
+  } else { 
     digitalWrite(outputPin2, HIGH);
     digitalWrite(outputPin3, HIGH); 
   } 
