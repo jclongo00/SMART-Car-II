@@ -19,11 +19,12 @@ const int echoPin2 = 7;
 const int trigPin3 = 2; 
 const int echoPin3 = 3;
 
-const int inputPin0 = 4;
+const int inputPin0 = 4; // 00 is no sesnors, 01 is front sensor, 10 is right sensor, 11 is left sensor
 const int inputPin1 = 13;
-const int outputPin0 = 9;  //Center ultrasonic bit 0
-const int outputPin1 = 10;  //Center ultrasonic bit 1
-const int outputPin2 = 11;  //Right ultrasonic bit 0
+
+const int outputPin0 = 9;  // 000 is less than 4", 001 is 4 < x < 8, 010 is 8 < x < 12, 011 is 12 < x < 16
+const int outputPin1 = 10;  // 100 is 16 < x < 20, 110 is 20 < x < 36, 111 is greater than 36
+const int outputPin2 = 11;  // 101 is the set number
 
 // variables will change: 
 int state = 0;        
@@ -62,19 +63,17 @@ int ultrasonic(int trigPin, int echoPin){
 }
 
 void loop() { 
+  digitalWrite(output0, HIGH);
+  digitalWrite(output1, LOW);
+  digitalWrite(output2, HIGH);
   state0 = digitalRead(inputPin0);
   state1 = digitalRead(inputPin1);
-  distance = 100;
+  
   if (state0 == LOW && state1 == LOW) { //No Sensors Activated
     
   } else if (state0 == HIGH && state1 == LOW) { // Front sensor only
     distance = ultrasonic(trigPin1,echoPin1);
-  } else if (state0 == LOW && state1 == HIGH) { // Right sensor only
-    distance = ultrasonic(trigPin2,echoPin2);
-  } else if (state0 == HIGH && state1 == HIGH) { // Left sensor only
-    distance = ultrasonic(trigPin3,echoPin3);
-  }
-  if ( distance < 4 ) { 
+    if ( distance < 4 ) { 
     digitalWrite(outputPin0, LOW);
     digitalWrite(outputPin1, LOW);
     digitalWrite(outputPin2, LOW);
@@ -94,8 +93,36 @@ void loop() {
     digitalWrite(outputPin0, LOW);
     digitalWrite(outputPin1, LOW); 
     digitalWrite(outputPin2, HIGH);
-  } else if ( distance < 24 ) { 
+  } else if ( distance < 36 ) { 
+    digitalWrite(outputPin0, LOW);
+    digitalWrite(outputPin1, HIGH); 
+    digitalWrite(outputPin2, HIGH);
+  } else { 
     digitalWrite(outputPin0, HIGH);
+    digitalWrite(outputPin1, HIGH); 
+    digitalWrite(outputPin2, HIGH);
+  }
+  delay(1)
+  } else if (state0 == LOW && state1 == HIGH) { // Right sensor only
+    distance = ultrasonic(trigPin2,echoPin2);
+    if ( distance < 4 ) { 
+    digitalWrite(outputPin0, LOW);
+    digitalWrite(outputPin1, LOW);
+    digitalWrite(outputPin2, LOW);
+  } else if ( distance < 8 ) { 
+    digitalWrite(outputPin0, HIGH);
+    digitalWrite(outputPin1, LOW); 
+    digitalWrite(outputPin2, LOW);
+  } else if ( distance < 12 ) { 
+    digitalWrite(outputPin0, LOW);
+    digitalWrite(outputPin1, HIGH); 
+    digitalWrite(outputPin2, LOW);
+  } else if ( distance < 16 ) { 
+    digitalWrite(outputPin0, HIGH);
+    digitalWrite(outputPin1, HIGH); 
+    digitalWrite(outputPin2, LOW);
+  } else if ( distance < 20 ) { 
+    digitalWrite(outputPin0, LOW);
     digitalWrite(outputPin1, LOW); 
     digitalWrite(outputPin2, HIGH);
   } else if ( distance < 36 ) { 
@@ -106,5 +133,39 @@ void loop() {
     digitalWrite(outputPin0, HIGH);
     digitalWrite(outputPin1, HIGH); 
     digitalWrite(outputPin2, HIGH);
+  }
+  delay(1)
+  } else if (state0 == HIGH && state1 == HIGH) { // Left sensor only
+    distance = ultrasonic(trigPin3,echoPin3);
+    if ( distance < 4 ) { 
+    digitalWrite(outputPin0, LOW);
+    digitalWrite(outputPin1, LOW);
+    digitalWrite(outputPin2, LOW);
+  } else if ( distance < 8 ) { 
+    digitalWrite(outputPin0, HIGH);
+    digitalWrite(outputPin1, LOW); 
+    digitalWrite(outputPin2, LOW);
+  } else if ( distance < 12 ) { 
+    digitalWrite(outputPin0, LOW);
+    digitalWrite(outputPin1, HIGH); 
+    digitalWrite(outputPin2, LOW);
+  } else if ( distance < 16 ) { 
+    digitalWrite(outputPin0, HIGH);
+    digitalWrite(outputPin1, HIGH); 
+    digitalWrite(outputPin2, LOW);
+  } else if ( distance < 20 ) { 
+    digitalWrite(outputPin0, LOW);
+    digitalWrite(outputPin1, LOW); 
+    digitalWrite(outputPin2, HIGH);
+  } else if ( distance < 36 ) { 
+    digitalWrite(outputPin0, LOW);
+    digitalWrite(outputPin1, HIGH); 
+    digitalWrite(outputPin2, HIGH);
+  } else { 
+    digitalWrite(outputPin0, HIGH);
+    digitalWrite(outputPin1, HIGH); 
+    digitalWrite(outputPin2, HIGH);
+  }
+  delay(1)
   }
 } 
