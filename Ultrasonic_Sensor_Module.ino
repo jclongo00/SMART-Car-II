@@ -24,7 +24,6 @@ const int inputPin1 = 13;
 const int outputPin0 = 9;  //Center ultrasonic bit 0
 const int outputPin1 = 10;  //Center ultrasonic bit 1
 const int outputPin2 = 11;  //Right ultrasonic bit 0
-const int outputPin3 = 12;  //Right ultrasonic bit 1
 
 // variables will change: 
 int state = 0;        
@@ -45,7 +44,6 @@ pinMode(inputPin1, INPUT);
 pinMode(outputPin0, OUTPUT); // Sets the pin as an Output 
 pinMode(outputPin1, OUTPUT); // Sets the pin as an Output 
 pinMode(outputPin2, OUTPUT); // Sets the pin as an Output 
-pinMode(outputPin3, OUTPUT); // Sets the pin as an Output 
 Serial.begin(9600); // Starts the serial communication 
 } 
 
@@ -76,17 +74,37 @@ void loop() {
   } else if (state0 == HIGH && state1 == HIGH) { // Left sensor only
     distance = ultrasonic(trigPin3,echoPin3);
   }
-  if ( distance < 8 ) { 
+  if ( distance < 4 ) { 
     digitalWrite(outputPin0, LOW);
     digitalWrite(outputPin1, LOW);
-  } else if ( distance < 16 ) { 
+    digitalWrite(outputPin2, LOW);
+  } else if ( distance < 8 ) { 
     digitalWrite(outputPin0, HIGH);
     digitalWrite(outputPin1, LOW); 
+    digitalWrite(outputPin2, LOW);
+  } else if ( distance < 12 ) { 
+    digitalWrite(outputPin0, LOW);
+    digitalWrite(outputPin1, HIGH); 
+    digitalWrite(outputPin2, LOW);
+  } else if ( distance < 16 ) { 
+    digitalWrite(outputPin0, HIGH);
+    digitalWrite(outputPin1, HIGH); 
+    digitalWrite(outputPin2, LOW);
+  } else if ( distance < 20 ) { 
+    digitalWrite(outputPin0, LOW);
+    digitalWrite(outputPin1, LOW); 
+    digitalWrite(outputPin2, HIGH);
+  } else if ( distance < 24 ) { 
+    digitalWrite(outputPin0, HIGH);
+    digitalWrite(outputPin1, LOW); 
+    digitalWrite(outputPin2, HIGH);
   } else if ( distance < 36 ) { 
     digitalWrite(outputPin0, LOW);
     digitalWrite(outputPin1, HIGH); 
+    digitalWrite(outputPin2, HIGH);
   } else { 
     digitalWrite(outputPin0, HIGH);
     digitalWrite(outputPin1, HIGH); 
-  } 
+    digitalWrite(outputPin2, HIGH);
+  }
 } 
