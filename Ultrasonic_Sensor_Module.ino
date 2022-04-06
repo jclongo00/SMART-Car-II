@@ -16,8 +16,11 @@ const int trigPin1 = 6;
 const int echoPin1 = 5; 
 const int trigPin2 = 8; 
 const int echoPin2 = 7;
+const int trigPin3 = 2; 
+const int echoPin3 = 3;
 
-const int inputPin = 4;
+const int inputPin0 = 4;
+const int inputPin1 = 13;
 const int outputPin0 = 9;  //Center ultrasonic bit 0
 const int outputPin1 = 10;  //Center ultrasonic bit 1
 const int outputPin2 = 11;  //Right ultrasonic bit 0
@@ -28,17 +31,21 @@ int state = 0;
 
 unsigned long currentMillis = 0;    // stores the value of millis() in each iteration of loop() 
 unsigned long previousServoMillis = 0; // the time when the servo was last moved 
-int distance1;
-int distance2;
+int distance;
 
 void setup() { 
 pinMode(trigPin1, OUTPUT); // Sets the trigPin as an Output 
 pinMode(echoPin1, INPUT); // Sets the echoPin as an Input 
 pinMode(trigPin2, OUTPUT); // Sets the trigPin as an Output 
 pinMode(echoPin2, INPUT); // Sets the echoPin as an Input 
-pinMode(inputPin, INPUT); 
+pinMode(trigPin3, OUTPUT); // Sets the trigPin as an Output 
+pinMode(echoPin3, INPUT); // Sets the echoPin as an Input 
+pinMode(inputPin0, INPUT); 
+pinMode(inputPin1, INPUT); 
 pinMode(outputPin0, OUTPUT); // Sets the pin as an Output 
 pinMode(outputPin1, OUTPUT); // Sets the pin as an Output 
+pinMode(outputPin2, OUTPUT); // Sets the pin as an Output 
+pinMode(outputPin3, OUTPUT); // Sets the pin as an Output 
 Serial.begin(9600); // Starts the serial communication 
 } 
 
@@ -57,42 +64,29 @@ int ultrasonic(int trigPin, int echoPin){
 }
 
 void loop() { 
-  state = digitalRead(inputPin);
-  while (state == LOW) {
-    delay(1);
-    state = digitalRead(inputPin); 
+  state0 = digitalRead(inputPin0);
+  state1 = digitalRead(inputPin1);
+  distance = 100;
+  if (state0 == LOW && state1 == LOW) { //No Sensors Activated
+    
+  } else if (state0 == HIGH && state1 == LOW) { // Front sensor only
+    distance = ultrasonic(trigPin1,echoPin1);
+  } else if (state0 == LOW && state1 == HIGH) { // Right sensor only
+    distance = ultrasonic(trigPin2,echoPin2);
+  } else if (state0 == HIGH && state1 == HIGH) { // Left sensor only
+    distance = ultrasonic(trigPin3,echoPin3);
   }
-  // Clears the trigPin 
-  Serial.print("Distance1: "); 
-  distance1 = ultrasonic(trigPin1,echoPin1);
-  Serial.println(ultrasonic(trigPin1,echoPin1)); 
-  Serial.print("Distance2: "); 
-  distance2 = ultrasonic(trigPin2,echoPin2);
-  Serial.println(ultrasonic(trigPin2,echoPin2));
-  if ( distance1 < 8 ) { 
+  if ( distance < 8 ) { 
     digitalWrite(outputPin0, LOW);
     digitalWrite(outputPin1, LOW);
-  } else if ( distance1 < 16 ) { 
+  } else if ( distance < 16 ) { 
     digitalWrite(outputPin0, HIGH);
     digitalWrite(outputPin1, LOW); 
-  } else if ( distance1 < 24 ) { 
+  } else if ( distance < 36 ) { 
     digitalWrite(outputPin0, LOW);
     digitalWrite(outputPin1, HIGH); 
   } else { 
     digitalWrite(outputPin0, HIGH);
     digitalWrite(outputPin1, HIGH); 
-  } 
-  if ( distance2 < 16 ) { 
-    digitalWrite(outputPin2, LOW);
-    digitalWrite(outputPin3, LOW);
-  } else if ( distance2 < 24 ) { 
-    digitalWrite(outputPin2, HIGH);
-    digitalWrite(outputPin3, LOW); 
-  } else if ( distance2 < 32 ) { 
-    digitalWrite(outputPin2, LOW);
-    digitalWrite(outputPin3, HIGH); 
-  } else { 
-    digitalWrite(outputPin2, HIGH);
-    digitalWrite(outputPin3, HIGH); 
   } 
 } 
